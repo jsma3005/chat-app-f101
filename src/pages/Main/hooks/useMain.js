@@ -1,11 +1,16 @@
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { parseJSON } from '../../../helpers'
 import { getUsers, postUser } from '../api'
 
 export const useMain = () => {
   const [isLoading, setIsLoading] = React.useState(false)
-  const [users, setUsers] = React.useState(null)
+  const [users, setUsers] = React.useState([])
+
+  const navigate = useNavigate()
+
+  const goChatPage = () => navigate('/chat')
 
   const handleAuth = () => {
     const auth = getAuth()
@@ -14,14 +19,15 @@ export const useMain = () => {
     return signInWithPopup(auth, provider)
   }
 
-  const postData = (data) => {
-    const request = postUser(data)
+  const postData = (data, uid, onClose) => {
+    const request = postUser(data, uid)
 
     setIsLoading(true)
     request
-      .then(res => {
-        console.log(res)
-        console.log('Success created user');
+      .then(() => {
+        localStorage.setItem('uid', data.userId)
+        onClose()
+        goChatPage()
       })
       .finally(() => setIsLoading(false))
   }
@@ -31,11 +37,11 @@ export const useMain = () => {
 
     request
       .then(res => {
-        const data = res.data
+        const data = Object
+          .entries(res.data)
+          .map(([, val]) => val)
 
-        if (data) {
-          setUsers(parseJSON(data))
-        }
+        res.data && setUsers(data)
       })
   }, [])
 
@@ -44,5 +50,6 @@ export const useMain = () => {
     isLoading,
     postData,
     handleAuth,
+    goChatPage,
   }
 }

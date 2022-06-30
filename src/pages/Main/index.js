@@ -1,7 +1,7 @@
-import { MainPage } from './pages'
+import { Page } from './pages'
 
 const Pages = {
-  MainPage,
+  Page,
 }
 
 export const Main = {

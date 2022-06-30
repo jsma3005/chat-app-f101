@@ -4,11 +4,9 @@ import { useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
 import { useMain } from '../hooks/useMain'
 
-window.onbeforeunload = function () {
-  return
-}
+export const Page = () => {
+  const isAuth = localStorage.getItem('uid')
 
-export const MainPage = () => {
   const [user, setUser] = React.useState(null)
 
   const { 
@@ -16,6 +14,7 @@ export const MainPage = () => {
     postData,
     isLoading,
     users,
+    goChatPage,
   } = useMain()
 
   const { 
@@ -51,6 +50,10 @@ export const MainPage = () => {
         const isRegisteredUser = users.find(item => item.userId === userId)
 
         if (!isRegisteredUser) return onOpen()
+
+        // когда, человек уже зареган на нашем сервисе
+        localStorage.setItem('uid', userId)
+        goChatPage()
       })
   }
 
@@ -60,8 +63,10 @@ export const MainPage = () => {
       login: data.login,
     }
 
-    postData(newData)
+    postData(newData, user.userId, onClose)
   }
+
+  if (isAuth) return goChatPage()
 
   return (
     <>
