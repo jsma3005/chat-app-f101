@@ -23,6 +23,7 @@ export const Page = () => {
     formState: {
       errors,
     },
+    setError,
   } = useForm()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -60,10 +61,17 @@ export const Page = () => {
   const onSubmit = (data) => {
     const newData = {
       ...user,
-      login: data.login,
+      login: data.login.toLowerCase(),
     }
 
-    postData(newData, user.userId, onClose)
+    const isUniqueLogin = !!users.find(item => item.login === data.login)
+
+    if (!isUniqueLogin) return postData(newData, user.userId, onClose)
+
+    setError('login', {
+      message: 'Данный логин занят',
+      type: 'validate',
+    })
   }
 
   if (isAuth) return goChatPage()
@@ -71,9 +79,9 @@ export const Page = () => {
   return (
     <>
       <div className="flex items-center justify-center w-full h-screen">
-        <div className="p-5 text-center rounded-lg bg-zinc-50">
-          <h1 className="mb-3 text-4xl text-dark">Hello, welcome to our F101 Chat App!</h1>
-          <h2 className="text-3xl text-dark">Please auth, to start using our chat app with Google!</h2>
+        <div className="p-5 font-bold text-center rounded-lg bg-primary">
+          <h1 className="mb-3 text-4xl font-bold text-white">Hello, welcome to our F101 Chat App!</h1>
+          <h2 className="text-3xl text-white">Please auth, to start using our chat app with Google!</h2>
           <FcGoogle 
             className="block w-12 h-12 mx-auto mt-4 cursor-pointer" 
             onClick={onAuth}
@@ -94,6 +102,10 @@ export const Page = () => {
                 placeholder="Введите ваш логин"
                 {...register('login', { 
                   required: 'Обязательное поле',
+                  minLength: {
+                    message: 'Не менее 3 символов',
+                    type: 3,
+                  }
                 })}
               />
               <FormErrorMessage>{errors.login?.message}</FormErrorMessage>
