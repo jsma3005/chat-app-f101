@@ -1,6 +1,7 @@
 import axios from "axios"
 import React from "react"
 import { useNavigate } from "react-router-dom"
+import { patch as patchLastSignIn } from "../pages/Main/api"
 
 const getUser = (uid) => axios.get(`/users/${uid}.json`)
 
@@ -24,6 +25,17 @@ const useUser = () => {
     localStorage.removeItem('uid')
     navigate('/')
   }
+
+  // change user last SignedInTime
+  React.useEffect(() => {
+    if (!uid) return
+
+    const interval = setInterval(() => {
+      patchLastSignIn(uid)
+    }, 10000)
+
+    return () => clearInterval(interval)
+  }, [uid])
 
   React.useEffect(() => {
     if (!uid) return

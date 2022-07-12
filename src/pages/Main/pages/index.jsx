@@ -15,6 +15,7 @@ export const Page = () => {
     isLoading,
     users,
     goChatPage,
+    patchLastLogin,
   } = useMain()
 
   const { 
@@ -54,6 +55,9 @@ export const Page = () => {
 
         // когда, человек уже зареган на нашем сервисе
         localStorage.setItem('uid', userId)
+
+        patchLastLogin(userId)
+        
         goChatPage()
       })
   }

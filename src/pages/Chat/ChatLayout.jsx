@@ -2,7 +2,9 @@ import React from "react"
 import { Route, Routes } from "react-router-dom"
 import { NotAuth } from "../../components/NotAuth"
 import { NotFound } from "../../components/NotFound"
+import { ChatRoom } from "./pages/ChatRoom"
 import { MainChatPage } from "./pages/MainChatPage"
+import { Sidebar } from './components/Sidebar'
 
 export const ChatLayout = () => {
   const isAuth = localStorage.getItem('uid')
@@ -10,9 +12,13 @@ export const ChatLayout = () => {
   if (!isAuth) return <NotAuth />
 
   return (
-    <Routes>
-      <Route index element={<MainChatPage />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <div>
+      <Sidebar />
+      <Routes>
+        <Route index element={<MainChatPage />} />
+        <Route path="/:login" element={<ChatRoom />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </div>
   )
 }

@@ -1,8 +1,7 @@
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { parseJSON } from '../../../helpers'
-import { getUsers, postUser } from '../api'
+import { getUsers, postUser, patch } from '../api'
 
 export const useMain = () => {
   const [isLoading, setIsLoading] = React.useState(false)
@@ -32,6 +31,17 @@ export const useMain = () => {
       .finally(() => setIsLoading(false))
   }
 
+  const patchLastLogin = (uid) => {
+    const request = patch(uid)
+
+    request
+      .then(res => {
+        const data = res.data
+        
+        console.log(data)
+      })
+  }
+
   React.useEffect(() => {
     const request = getUsers()
 
@@ -51,5 +61,6 @@ export const useMain = () => {
     postData,
     handleAuth,
     goChatPage,
+    patchLastLogin,
   }
 }

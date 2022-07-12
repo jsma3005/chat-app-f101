@@ -30,6 +30,7 @@ export const Sidebar = () => {
   const { user: currentUser, logout } = CurrentUser.use()
   const {
     users,
+    goToChatRoom,
   } = Chat.Hooks.MainChat.use()
 
   const { onClose, isOpen, onOpen } = useDisclosure()
@@ -67,6 +68,10 @@ export const Sidebar = () => {
                 <div 
                   className="flex items-center mb-3 border-b-[1px] pb-3 last:mb-0 last:border-b-0 cursor-pointer"
                   key={user.userId}
+                  onClick={() => {
+                    goToChatRoom(user.login)
+                    onClose()
+                  }}
                 >
                   <Avatar 
                     name={`${user.firstName} ${user.lastName}`} 
@@ -80,7 +85,6 @@ export const Sidebar = () => {
                         ? <CurrentUserCard />
                         : <OtherUserCard user={user} />
                     }
-                    
                     
                   </div>
                 </div>   
